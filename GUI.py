@@ -11,6 +11,8 @@ def main():
     root = tk.Tk()
     root.title('Note and storage')
     root.geometry('1080x720')
+    n1 = ds.DSNOTE()
+    n1.nhapNote()
     root.mainloop()
 
 if __name__ == '__main__':
