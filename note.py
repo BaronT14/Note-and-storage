@@ -1,15 +1,9 @@
 class NOTE:
-    def __init__(self):
+    def __init__(self, tieude, noidung):
         self.info = {
-            'Tieu de' : '',
-            'Noi dung' : ''
+            'Tieu de' : tieude,
+            'Noi dung' : noidung
         }
 
-    def nhapNote(self):
-        self.info['Tieu de'] = input('Tieu de: ')
-        self.info['Noi dung'] = input('Noi dung: ')
-
     def xuat(self):
-        print(f"Tieu de: {self.info['Tieu de']}\nNoi dung: {self.info['Noi dung']}")
-
-    
+        print(f'Tieu de: {self.info['Tieu de']}\nNoi dung: {self.info['Noi dung']}')
