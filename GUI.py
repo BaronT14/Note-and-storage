@@ -1,9 +1,8 @@
 import DSnote as ds
 import note as n
-import tkinter as tk
+from tkinter import *
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
-from ttkbootstrap.constants import *
 
 class GUI:
     def __init__(self, root):
@@ -12,21 +11,42 @@ class GUI:
         self.style = Style("minty")
         self.listNote = ds.DSNOTE()
 
-        self.tieude_entry = tk.Entry(root, width=50, font=('Times New Roman', 18, 'italic'))
-        self.tieude_entry.grid(row=0, column=2, padx=5, pady=5)
-        self.tieude_label = tk.Label(root, text="Tiêu đề:")
-        self.tieude_label.grid(row=0, column=1, padx=50, pady=50)
+        self.frame_top = ttk.Frame(self.root, bootstyle='dark')
+        self.frame_top.pack(side='top', fill='x')
+        self.tieude_label = ttk.Label(self.frame_top, text="NOTE AND STORAGE", font=("Helvetica",20, "bold"))
+        self.tieude_label.pack(pady=10, padx=(10,0) , side='left')
+        self.add_button = ttk.Button(self.frame_top, text="Thêm ghi chú", command=self.themNote)
+        self.add_button.pack(side='right', padx=(0, 30))
 
-        self.noidung_entry = tk.Entry(root, width=75, font=('Times New Roman', 12))
-        self.noidung_entry.grid(row=1, column=2, padx=5, pady=5)
-        self.noidung_label = tk.Label(root, text="Nội dung:")
-        self.noidung_label.grid(row=1, column=1, padx=5, pady=5)
 
-        self.add_button = tk.Button(root, text="Thêm ghi chú", command=self.themNote)
-        self.add_button.grid(row=5, column=0, columnspan=2, sticky=W ,padx=5, pady=5)
 
-        self.note_listbox = tk.Listbox(root)
-        self.note_listbox.grid(row=5, column=2, rowspan=5, sticky=W,padx=50, pady=(50, 50))
+
+        self.frame_left = ttk.Frame(self.root)
+        self.frame_left.pack(side='left', fill='y')
+        self.scrollbar = ttk.Scrollbar(self.frame_left)
+        self.note_listbox = ttk.Treeview(self.frame_left, columns=("Title"), show="headings", yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.configure(command=self.note_listbox.yview)
+        self.note_listbox.pack(side="left", fill="both", expand=True)
+        self.note_listbox.heading("Title", text="Tiêu đề")
+
+
+        self.frame_right = ttk.Frame(self.root)
+        self.frame_right.pack(fill='x')
+
+        self.frame_right_tieude = ttk.Frame(self.frame_right)
+        self.frame_right_tieude.pack(fill='x')
+        # self.tieude_label = ttk.Label(self.frame_right_tieude, text="Tiêu đề:")
+        # self.tieude_label.pack(side='left', padx=20, pady=30)
+        self.tieude_entry = ttk.Entry(self.frame_right_tieude, font=('Helvetica', 18, 'italic'))
+        self.tieude_entry.pack(side='left',padx=(20,0), pady=(30,0))
+
+        self.frame_right_noidung = ttk.Frame(self.frame_right)
+        self.frame_right_noidung.pack(fill='x')
+        # self.noidung_label = ttk.Label(self.frame_right_noidung, text="Nội dung:")
+        # self.noidung_label.pack(side='left', padx=20, pady=30)
+        self.noidung_entry = ttk.Entry(self.frame_right_noidung, font=('Helvetica', 12))
+        self.noidung_entry.pack(side='left', padx=(20,0))
 
     def themNote(self):
         tieude = self.tieude_entry.get()
@@ -35,14 +55,14 @@ class GUI:
         self.update_listbox()
 
     def update_listbox(self):
-        self.note_listbox.delete(0, tk.END)
+        for row in self.note_listbox.get_children():
+            self.note_listbox.delete(row)
         for note in self.listNote.list:
-            note_str = f"{note['Tieu de']}"
-            self.note_listbox.insert(tk.END, note_str)
+            self.note_listbox.insert("", "end", values=(note['Tieu de'],))
 
     
 def main():
-    root = tk.Tk()
+    root = Tk()
     root.geometry('1080x600')
     app = GUI(root)
     root.mainloop()
