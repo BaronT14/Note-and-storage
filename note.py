@@ -6,4 +6,4 @@ class NOTE:
         }
 
     def xuat(self):
-        print(f'Tieu de: {self.info['Tieu de']}\nNoi dung: {self.info['Noi dung']}')
+        print(f'Tieu de: {self.info["Tieu de"]}\nNoi dung: {self.info["Noi dung"]}')
