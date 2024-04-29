@@ -1,6 +1,7 @@
 import DSnote as ds
 import note as n
 from tkinter import *
+from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
@@ -50,6 +51,11 @@ class GUI:
 
         self.Add_button = ttk.Button(self.frame_right, text="Thêm ghi chú", command=self.themNote)
         self.Add_button.pack(side='right', padx=(0, 50), pady=(0, 30))
+        
+        self.delete_Button = ttk.Button(self.frame_right, text="Mở File", command=self.openfile)
+        self.delete_Button.pack(side='right', padx=(0, 50), pady=(0, 30))
+
+
 
     def xoaEntry(self):
         self.tieude_text.delete("1.0", "end-1c")
@@ -66,6 +72,12 @@ class GUI:
             self.note_listbox.delete(row)
         for note in self.listNote.list:
             self.note_listbox.insert("", "end", values=(note['Tieu de'],))
+    #Ham mo file - file explorer
+    def openfile(self):
+        filepath=filedialog.askopenfilename()
+        file=open(filepath, 'r')
+        print(file.read())
+        file.close()
 
     
 def main():
