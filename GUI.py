@@ -1,16 +1,16 @@
 import DSnote as ds
 import note as n
 from tkinter import *
-from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
-class GUI:
+class GUI(ds.DSNOTE):
     def __init__(self, root):
         self.root = root
         self.root.title("NOTE AND STORAGE")
         self.style = Style("minty")
         self.listNote = ds.DSNOTE()
+        self.listNote.docFile()
 
         self.frame_top = ttk.Frame(self.root, bootstyle='dark')
         self.frame_top.pack(side='top', fill='x')
@@ -18,8 +18,6 @@ class GUI:
         self.tieude_label.pack(pady=10, padx=(10,0) , side='left')
         self.newNote_button = ttk.Button(self.frame_top, text="Tạo ghi chú mới", command=self.xoaEntry)
         self.newNote_button.pack(side='right', padx=(0, 30))
-
-
 
 
         self.frame_left = ttk.Frame(self.root)
@@ -30,6 +28,7 @@ class GUI:
         self.scrollbar.configure(command=self.note_listbox.yview)
         self.note_listbox.pack(side="left", fill="both", expand=True)
         self.note_listbox.heading("Title", text="Danh sách ghi chú")
+        self.update_listbox()
 
 
         self.frame_right = ttk.Frame(self.root)
@@ -37,54 +36,75 @@ class GUI:
 
         self.frame_right_tieude = ttk.Frame(self.frame_right)
         self.frame_right_tieude.pack(fill='x')
-        # self.tieude_label = ttk.Label(self.frame_right_tieude, text="Tiêu đề:")
-        # self.tieude_label.pack(side='left', padx=20, pady=30)
+
         self.tieude_text = ttk.Text(self.frame_right_tieude, height=1, font=('Helvetica', 18, 'italic'))
         self.tieude_text.pack(side='left',padx=50, pady=(30,0))
 
         self.frame_right_noidung = ttk.Frame(self.frame_right)
         self.frame_right_noidung.pack(fill='x')
-        # self.noidung_label = ttk.Label(self.frame_right_noidung, text="Nội dung:")
-        # self.noidung_label.pack(side='left', padx=20, pady=30)
+
         self.noidung_text = ttk.Text(self.frame_right_noidung, width=100, height=20, font=('Helvetica', 12))
         self.noidung_text.pack(side='left', padx=50, pady=(0, 30))
 
-        self.Add_button = ttk.Button(self.frame_right, text="Thêm ghi chú", command=self.themNote)
+        self.Add_button = ttk.Button(self.frame_right, text="Thêm ghi chú", command=self.them_Note)
         self.Add_button.pack(side='right', padx=(0, 50), pady=(0, 30))
-        
-        self.delete_Button = ttk.Button(self.frame_right, text="Mở File", command=self.openfile)
-        self.delete_Button.pack(side='right', padx=(0, 50), pady=(0, 30))
 
+        self.note_listbox.bind("<<TreeviewSelect>>", self.chon_note)
 
+        self.Update_button = ttk.Button(self.frame_right, text="Cập nhật ghi chú", command=self.capNhat_Note)
+        self.Update_button.pack(side='right', padx=(0, 20), pady=(0, 30))
+
+        self.Delete_button = ttk.Button(self.frame_right, text="Xoá ghi chú", command=self.xoa_Note)
+        self.Delete_button.pack(side='right', padx=(0, 20), pady=(0, 30))
+
+    def chon_note(self, event):
+        selected_item = self.note_listbox.selection()
+        if selected_item:
+            selected_title = self.note_listbox.item(selected_item)['values'][0]
+            selected_note = self.listNote.timNoteTheoTieuDe(selected_title)
+            if selected_note:
+                self.tieude_text.delete("1.0", "end")
+                self.tieude_text.insert("1.0", selected_title)
+                self.noidung_text.delete("1.0", "end")
+                self.noidung_text.insert("1.0", selected_note['Noi dung'])
 
     def xoaEntry(self):
         self.tieude_text.delete("1.0", "end-1c")
         self.noidung_text.delete("1.0", "end-1c")
 
-    def themNote(self):
+    def them_Note(self):
         tieude = self.tieude_text.get("1.0", "end-1c")
         noidung = self.noidung_text.get("1.0", "end-1c")
         self.listNote.taoNote(tieude, noidung)
         self.update_listbox()
+        self.listNote.ghiFile()
+
+    def capNhat_Note(self):
+        tieude = self.tieude_text.get("1.0", "end-1c")
+        noidung = self.noidung_text.get("1.0", "end-1c")
+        self.listNote.suaNote(tieude, noidung)
+        self.listNote.ghiFile()
+
+    def xoa_Note(self):
+        tieude = self.tieude_text.get("1.0", "end-1c")
+        self.listNote.xoaNote(tieude)
+        self.update_listbox()
+        self.listNote.ghiFile()
+        
 
     def update_listbox(self):
         for row in self.note_listbox.get_children():
             self.note_listbox.delete(row)
-        for note in self.listNote.list:
+        for note in reversed(self.listNote.list):
             self.note_listbox.insert("", "end", values=(note['Tieu de'],))
-    #Ham mo file - file explorer
-    def openfile(self):
-        filepath=filedialog.askopenfilename()
-        file=open(filepath, 'r')
-        print(file.read())
-        file.close()
 
     
 def main():
     root = Tk()
-    root.geometry('1080x600')
+    root.geometry('1080x600+150+50')
     app = GUI(root)
     root.mainloop()
+    
     
 if __name__ == '__main__':
     main()
