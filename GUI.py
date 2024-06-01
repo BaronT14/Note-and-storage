@@ -237,8 +237,8 @@ class USER:
         self.root = tk.Tk()
         self.root.title('Login')
         self.root.geometry('400x500+500+50')
-        self.docFile('./dist/dsadmin.json')
-        self.docFile('./dist/dsuser.json')
+        self.docFile('./data_json/dsadmin.json')
+        self.docFile('./data_json/dsuser.json')
 
         self.chon_user_admin()
 
@@ -340,7 +340,7 @@ class USER:
         try:
             with open(filename, 'r') as f:
                 temp = json.load(f)
-                if filename == './dist/dsadmin.json':
+                if filename == './data_json/dsadmin.json':
                     for i in temp:
                         self.dsadmin.append(i)
                 else:
@@ -355,7 +355,7 @@ class USER:
 
     def ghiFile(self):
         try:    
-            with open('./dist/dsuser.json','w') as f:
+            with open('./data_json/dsuser.json','w') as f:
                 json.dump(self.dsuser,f)
         except FileNotFoundError:
             print('File khong ton tai')

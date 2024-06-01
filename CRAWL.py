@@ -63,7 +63,7 @@ class CRAWL:
 
     def docFile(self):
         try:
-            with open('./dist/dsjob.json', 'r') as f:
+            with open('./data_json/dsjob.json', 'r') as f:
                 temp = json.load(f)
                 for i in temp:
                     self.ds_crawl.append(i)
@@ -76,7 +76,7 @@ class CRAWL:
 
     def ghiFile(self):
         try:
-            with open('./dist/dsjob.json','w') as f:
+            with open('./data_json/dsjob.json','w') as f:
                 json.dump(self.ds_crawl,f)
         except FileNotFoundError:
             print('File khong ton tai')
