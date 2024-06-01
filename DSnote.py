@@ -27,7 +27,7 @@ class DSNOTE:
 
     def docFile(self):
         try:
-            with open('note.json', 'r') as f:
+            with open('./dist/note.json', 'r') as f:
                 temp = json.load(f)
                 for i in temp:
                     self.list.append(i)
@@ -40,7 +40,7 @@ class DSNOTE:
 
     def ghiFile(self):
         try:
-            with open('note.json','w') as f:
+            with open('./dist/note.json','w') as f:
                 json.dump(self.list,f)
         except FileNotFoundError:
             print('File khong ton tai')

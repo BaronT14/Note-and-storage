@@ -233,11 +233,12 @@ class USER:
         self.quyen = 'user'
         self.dsuser = []
         self.dsadmin = []
+        self.dangnhap = 0
         self.root = tk.Tk()
         self.root.title('Login')
         self.root.geometry('400x500+500+50')
-        self.docFile('dsadmin.json')
-        self.docFile('dsuser.json')
+        self.docFile('./dist/dsadmin.json')
+        self.docFile('./dist/dsuser.json')
 
         self.chon_user_admin()
 
@@ -307,6 +308,7 @@ class USER:
             for i in self.dsadmin:
                 if i['name'] == name and i['password'] == password:
                     mb.showinfo('Thông báo', 'Đăng nhập thành công')
+                    self.dangnhap = 1
                     self.root.destroy()
                     return True
             mb.showerror('Thông báo', 'Đăng nhập thất bại')
@@ -314,6 +316,7 @@ class USER:
             for i in self.dsuser:
                 if i['name'] == name and i['password'] == password:
                     mb.showinfo('Thông báo', 'Đăng nhập thành công')
+                    self.dangnhap = 1
                     self.root.destroy()
                     return True
             mb.showerror('Thông báo', 'Đăng nhập thất bại')
@@ -323,16 +326,21 @@ class USER:
         info = {}
         info['name'] = self.username_entry.get()
         info['password'] = self.password_entry.get()
-        self.dsuser.append(info)
-        self.ghiFile()
-        mb.showinfo('Thông báo', 'Đăng ký thành công')
+        if len(info['name']) == 0 or len(info['password']) == 0:
+            mb.showerror('Đăng kí thất bại', 'Chưa nhập đủ thông tin')
+        else:
+            self.dsuser.append(info)
+            self.ghiFile()
+            self.username_entry.delete(0, END)
+            self.password_entry.delete(0, END)
+            mb.showinfo('Thông báo', 'Đăng ký thành công')
 
 
     def docFile(self, filename):
         try:
             with open(filename, 'r') as f:
                 temp = json.load(f)
-                if filename == 'dsadmin.json':
+                if filename == './dist/dsadmin.json':
                     for i in temp:
                         self.dsadmin.append(i)
                 else:
@@ -346,8 +354,8 @@ class USER:
             print(f'Loi khong xac dinh: {e}')
 
     def ghiFile(self):
-        try:
-            with open('dsuser.json','w') as f:
+        try:    
+            with open('./dist/dsuser.json','w') as f:
                 json.dump(self.dsuser,f)
         except FileNotFoundError:
             print('File khong ton tai')
@@ -360,14 +368,15 @@ class main:
     def __init__(self):
         self.h = USER()
         self.quyen = self.h.quyen
-        self.root = Tk()
-        self.root.geometry('500x200+500+50')
-        self.root.title("NOTE AND JOBS")
-        self.style = Style("minty")
-        self.frame_main = tk.Frame(self.root)
-        self.frame_main.pack()
-        self.chon_app()
-        self.root.mainloop()
+        if self.h.dangnhap == 1:
+            self.root = Tk()
+            self.root.geometry('500x200+500+50')
+            self.root.title("NOTE AND JOBS")
+            self.style = Style("minty")
+            self.frame_main = tk.Frame(self.root)
+            self.frame_main.pack()
+            self.chon_app()
+            self.root.mainloop()
 
     def chon_app(self):
         btn_note_app = tk.Button(self.frame_main, text='Ứng dụng note', font=('Helvetica', 25), width=36, command=self.appNote)
